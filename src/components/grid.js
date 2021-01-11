@@ -52,11 +52,12 @@ function Grid() {
                 </div>
             </div>
             {imgData.fetching && (
-                <div className="text-center bg-secondary m-auto p-3">
-                    <p className="m-0 text-white">Getting images</p>
-                </div>
+                <img className="loading"
+                    src="https://media2.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif"
+                    alt="loading"
+                />
             )}
-            <div id='page-bottom-boundary' style={{ border: '1px solid red' }} ref={bottomBoundaryRef}></div>
+            <div id='page-bottom-boundary' ref={bottomBoundaryRef}></div>
         </div>
     );
 }
