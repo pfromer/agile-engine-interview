@@ -2,11 +2,9 @@ import React, { useReducer, useRef, useContext } from 'react';
 import { useFetch, useInfiniteScroll, useLazyLoading, useFetchImageDetail } from '../customHooks'
 import 'react-image-lightbox/style.css';
 import Context from '../context'
-
-
 import '../index.css';
 
-function Grid(props) {//imgData, imgDispatch
+function Grid() {
 
     const pageReducer = (state, action) => {
         switch (action.type) {
@@ -17,16 +15,17 @@ function Grid(props) {//imgData, imgDispatch
         }
     }
 
-    const [pager, pagerDispatch] = useReducer(pageReducer, { page: 0 })
-
-    let bottomBoundaryRef = useRef(null);
-    useFetch(pager, props.imgDispatch);
-    useLazyLoading('.card-img-top', props.imgData.images);
-    useInfiniteScroll(bottomBoundaryRef, pagerDispatch);
-
-    const { setIndex, setOpened } = useContext(
+    const { setIndex, setOpened, imgData, imgDispatch } = useContext(
         Context
     );
+
+    const images = imgData.images;
+
+    const [pager, pagerDispatch] = useReducer(pageReducer, { page: 0 });
+    let bottomBoundaryRef = useRef(null);
+    useFetch(pager, imgDispatch);
+    useLazyLoading('.card-img-top', images);
+    useInfiniteScroll(bottomBoundaryRef, pagerDispatch);
 
     return (
         <div className="">
@@ -39,7 +38,7 @@ function Grid(props) {//imgData, imgDispatch
             </nav>
             <div id='images' className="container">
                 <div className="row">
-                    {props.imgData.images.map((image, index) => {
+                    {images.map((image, index) => {
                         return (
                             <div key={index} className="card">
                                 <div className="card-body ">
@@ -55,7 +54,7 @@ function Grid(props) {//imgData, imgDispatch
                     })}
                 </div>
             </div>
-            {props.imgData.fetching && (
+            {imgData.fetching && (
                 <div className="text-center bg-secondary m-auto p-3">
                     <p className="m-0 text-white">Getting images</p>
                 </div>
@@ -63,7 +62,5 @@ function Grid(props) {//imgData, imgDispatch
             <div id='page-bottom-boundary' style={{ border: '1px solid red' }} ref={bottomBoundaryRef}></div>
         </div>
     );
-
-
 }
 export default Grid;

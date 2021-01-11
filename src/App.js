@@ -22,16 +22,9 @@ function App() {
   const [isOpened, setOpened] = useState(false);
 
   return (
-    <Context.Provider
-      value={{ index, isOpened, setIndex, setOpened }}
-    >
-      <Grid
-        imgData={imgData}
-        imgDispatch={imgDispatch}
-      />
-      <PhotoViewer
-        imgData={imgData}
-      />
+    <Context.Provider value={{ index, isOpened, setIndex, setOpened, imgData, imgDispatch }}>
+      <Grid />
+      <PhotoViewer />
     </Context.Provider>
   );
 }

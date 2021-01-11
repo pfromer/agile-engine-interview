@@ -5,7 +5,7 @@ import 'react-image-lightbox/style.css';
 import { WhatsappShareButton, WhatsappIcon } from "react-share";
 import Context from '../context'
 
-function PhotoViewer(props) {
+function PhotoViewer() {
 
     const imageDetailReducer = (state, action) => {
         switch (action.type) {
@@ -18,13 +18,14 @@ function PhotoViewer(props) {
         }
     }
 
-    const { index, isOpened, setIndex, setOpened } = useContext(
+    const { index, isOpened, setIndex, setOpened, imgData } = useContext(
         Context
     );
 
-    const [currentImage, imageDetailDispatch] = useReducer(imageDetailReducer, { imageDetail: {}, fetching: false })
-    useFetchImageDetail(props.imgData.images[index] ? props.imgData.images[index].id : null, imageDetailDispatch);
+    const images = imgData.images;
 
+    const [currentImage, imageDetailDispatch] = useReducer(imageDetailReducer, { imageDetail: {}, fetching: false })
+    useFetchImageDetail(images[index] ? images[index].id : null, imageDetailDispatch);
 
     return (
         <div>
@@ -33,13 +34,13 @@ function PhotoViewer(props) {
                     imageTitle={!currentImage.fetching ? 'Autor: ' + currentImage.imageDetail.author + ', Camera Model: ' + currentImage.imageDetail.camera : ''}
                     imageCaption={!currentImage.fetching ? currentImage.imageDetail.tags : ''}
                     mainSrc={!currentImage.fetching ? currentImage.imageDetail.full_picture : ''}
-                    nextSrc={props.imgData.images[(index + 1) % props.imgData.images.length].cropped_picture}
-                    prevSrc={props.imgData.images[(index + props.imgData.images.length - 1) % props.imgData.images.length].cropped_picture}
+                    nextSrc={images[(index + 1) % images.length].cropped_picture}
+                    prevSrc={images[(index + images.length - 1) % images.length].cropped_picture}
                     onCloseRequest={() => setOpened(false)}
-                    onMovePrevRequest={() => setIndex((index + props.imgData.images.length - 1) % props.imgData.images.length)}
-                    onMoveNextRequest={() => setIndex((index + 1) % props.imgData.images.length)}
+                    onMovePrevRequest={() => setIndex((index + images.length - 1) % images.length)}
+                    onMoveNextRequest={() => setIndex((index + 1) % images.length)}
                     toolbarButtons={[
-                        <WhatsappShareButton url={props.imgData.images[index].full_picture} children={<WhatsappIcon size={32} round={true} />} />
+                        <WhatsappShareButton url={images[index].full_picture} children={<WhatsappIcon size={32} round={true} />} />
                     ]}
                 />
             )}
