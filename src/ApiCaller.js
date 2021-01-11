@@ -31,7 +31,6 @@ const refreshToken = () => {
       saveToken(response.data.token)
     })
     .catch(error => {
-      // Clear token and continue with the Promise catch chain
       clearToken()
       throw error
     })

@@ -1,5 +1,5 @@
 import React, { useReducer, useContext } from 'react';
-import { useFetchImageDetail } from '../customHooks'
+import useFetchImageDetail from '../customHooks/useFetchImageDetail'
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
 import { WhatsappShareButton, WhatsappIcon } from "react-share";

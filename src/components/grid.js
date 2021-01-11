@@ -1,5 +1,7 @@
 import React, { useReducer, useRef, useContext } from 'react';
-import { useFetch, useInfiniteScroll, useLazyLoading, useFetchImageDetail } from '../customHooks'
+import useFetch from '../customHooks/useFetch'
+import useInfiniteScroll from '../customHooks/useInfiniteScroll'
+import useLazyLoading from '../customHooks/useLazyLoading'
 import 'react-image-lightbox/style.css';
 import Context from '../context'
 import '../index.css';
@@ -28,28 +30,23 @@ function Grid() {
     useInfiniteScroll(bottomBoundaryRef, pagerDispatch);
 
     return (
-        <div className="">
+        <div>
             <nav className="navbar bg-light">
                 <div className="container">
-                    <a className="navbar-brand" href="/#">
-                        <h2>Image Grid</h2>
-                    </a>
+                    <h2>Gallery</h2>
                 </div>
             </nav>
-            <div id='images' className="container">
-                <div className="row">
+            <div className="container">
+                <div id='images' className="image-grid">
                     {images.map((image, index) => {
                         return (
-                            <div key={index} className="card">
-                                <div className="card-body ">
-                                    <img
-                                        data-src={image.cropped_picture}
-                                        className="card-img-top"
-                                        src={'https://res.cloudinary.com/codier/image/upload/c_scale,w_235/jqxbwxmnrkjq0mxhnvjn'}
-                                        onClick={() => { setIndex(index); setOpened(true); }}
-                                    />
-                                </div>
-                            </div>
+                            <img
+                                key={index}
+                                data-src={image.cropped_picture}
+                                className="card-img-top"
+                                src={''}
+                                onClick={() => { setIndex(index); setOpened(true); }}
+                            />
                         )
                     })}
                 </div>
