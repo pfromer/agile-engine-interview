@@ -7,7 +7,7 @@ export const useFetch = (data, dispatch) => {
     dispatch({ type: 'FETCHING_IMAGES', fetching: true });
     _fetch('http://interview.agileengine.com/images?page=' + data.page)
       .then(res => {
-        var pictures = res.body.pictures.map(p => p.cropped_picture);
+        var pictures = res.body.pictures;
         dispatch({ type: 'STACK_IMAGES', images: pictures });
         dispatch({ type: 'FETCHING_IMAGES', fetching: false });
       })
@@ -66,4 +66,26 @@ export const useLazyLoading = (imgSelector, items) => {
       imagesRef.current.forEach(img => imgObserver(img));
     }
   }, [imgObserver, imagesRef, imgSelector, items])
+}
+
+
+export const useFetchImageDetail = (imageId, dispatch) => {
+  useEffect(() => {
+    if (imageId != null) {
+      dispatch({ type: 'FETCHING_IMAGE_DETAIL', fetching: true });
+      _fetch('http://interview.agileengine.com/images/' + imageId)
+        .then(res => {
+          var imageDetail = res.body;
+          console.log(imageDetail)
+          dispatch({ type: 'SET_IMAGE_DETAIL', imageDetail: imageDetail });
+          dispatch({ type: 'FETCHING_IMAGE_DETAIL', fetching: false });
+        })
+        .catch(e => {
+          dispatch({ type: 'FETCHING_IMAGE_DETAIL', fetching: false });
+          return e;
+        })
+    }
+
+  }, [dispatch, imageId])
+
 }

@@ -1,5 +1,8 @@
-import React, { useReducer, useRef } from 'react';
-import { useFetch, useInfiniteScroll, useLazyLoading } from './customHooks'
+import React, { useReducer, useRef, useState } from 'react';
+import { useFetch, useInfiniteScroll, useLazyLoading, useFetchImageDetail } from './customHooks'
+import Lightbox from 'react-image-lightbox';
+import 'react-image-lightbox/style.css';
+import { WhatsappShareButton, WhatsappIcon } from "react-share";
 
 
 import './index.css';
@@ -24,21 +27,53 @@ function App() {
         return state;
     }
   }
+
+  const imageDetailReducer = (state, action) => {
+    switch (action.type) {
+      case 'SET_IMAGE_DETAIL':
+        return { ...state, imageDetail: action.imageDetail }
+      case 'FETCHING_IMAGE_DETAIL':
+        return { ...state, fetching: action.fetching }
+      default:
+        return state;
+    }
+  }
+
   const [imgData, imgDispatch] = useReducer(imgReducer, { images: [], fetching: true })
   const [pager, pagerDispatch] = useReducer(pageReducer, { page: 0 })
+  const [currentImage, imageDetailDispatch] = useReducer(imageDetailReducer, { imageDetail: {}, fetching: false })
+
+  const [photoIndex, setIndex] = useState(0);
+  const [isOpen, setOpened] = useState(false);
 
 
   let bottomBoundaryRef = useRef(null);
   useFetch(pager, imgDispatch);
-  useLazyLoading('.card-img-top', imgData.images)
+  useLazyLoading('.card-img-top', imgData.images);
   useInfiniteScroll(bottomBoundaryRef, pagerDispatch);
+  useFetchImageDetail(imgData.images[photoIndex] ? imgData.images[photoIndex].id : null, imageDetailDispatch)
 
   return (
     <div className="">
+      {isOpen && (
+        <Lightbox
+          imageTitle={!currentImage.fetching ? 'Autor: ' + currentImage.imageDetail.author + ', Camera Model: ' + currentImage.imageDetail.camera : ''}
+          imageCaption={!currentImage.fetching ? currentImage.imageDetail.tags : ''}
+          mainSrc={!currentImage.fetching ? currentImage.imageDetail.full_picture : ''}
+          nextSrc={imgData.images[(photoIndex + 1) % imgData.images.length].cropped_picture}
+          prevSrc={imgData.images[(photoIndex + imgData.images.length - 1) % imgData.images.length].cropped_picture}
+          onCloseRequest={() => setOpened(false)}
+          onMovePrevRequest={() => setIndex((photoIndex + imgData.images.length - 1) % imgData.images.length)}
+          onMoveNextRequest={() => setIndex((photoIndex + 1) % imgData.images.length)}
+          toolbarButtons={[
+            <WhatsappShareButton url={imgData.images[photoIndex].cropped_picture} children={<WhatsappIcon size={32} round={true} />} />
+          ]}
+        />
+      )}
       <nav className="navbar bg-light">
         <div className="container">
           <a className="navbar-brand" href="/#">
-            <h2>Infinite scroll + image lazy loading</h2>
+            <h2>Image Grid</h2>
           </a>
         </div>
       </nav>
@@ -49,9 +84,10 @@ function App() {
               <div key={index} className="card">
                 <div className="card-body ">
                   <img
-                    data-src={image}
+                    data-src={image.cropped_picture}
                     className="card-img-top"
-                    src={'https://picsum.photos/id/870/300/300?grayscale&blur=2'}
+                    src={'https://res.cloudinary.com/codier/image/upload/c_scale,w_235/jqxbwxmnrkjq0mxhnvjn'}
+                    onClick={() => { setOpened(true); setIndex(index) }}
                   />
                 </div>
               </div>
